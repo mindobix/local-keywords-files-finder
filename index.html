@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keywords Files Finder</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      :root {
+        --bg:       #080c14;
+        --surface:  #0f1520;
+        --surface2: #161e2e;
+        --border:   #1e2d45;
+        --border2:  #253550;
+        --text:     #e8f0fe;
+        --muted:    #6b7fa3;
+        --dim:      #2a3a5c;
+        --sky:      #0ea5e9;
+        --sky2:     #38bdf8;
+        --sky-glow: rgba(14, 165, 233, 0.18);
+      }
+
+      html, body {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 14px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        top: -200px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 900px;
+        height: 600px;
+        background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 80px 24px 80px;
+      }
+
+      /* ── BACK LINK ── */
+      .back-link {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        margin-bottom: 48px;
+        transition: color 0.15s;
+      }
+      .back-link:hover { color: var(--sky2); }
+
+      /* ── HERO ── */
+      .hero { text-align: center; margin-bottom: 56px; max-width: 600px; }
+
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(14, 165, 233, 0.1);
+        border: 1px solid rgba(14, 165, 233, 0.25);
+        border-radius: 100px;
+        padding: 5px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--sky2);
+        margin-bottom: 24px;
+      }
+
+      .badge-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--sky);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--sky);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: 0.5; transform: scale(0.8); }
+      }
+
+      .hero-icon {
+        font-size: 52px;
+        margin-bottom: 20px;
+        display: block;
+        filter: drop-shadow(0 0 24px rgba(14, 165, 233, 0.4));
+      }
+
+      .hero-title {
+        font-size: clamp(32px, 5vw, 52px);
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, #e8f0fe 30%, var(--sky2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-sub {
+        font-size: 16px;
+        color: var(--muted);
+        line-height: 1.65;
+        max-width: 500px;
+        margin: 0 auto 32px;
+      }
+
+      /* ── CTA ── */
+      .cta-row {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+        border: none;
+      }
+      .btn:hover { transform: translateY(-2px); }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #0ea5e9, #0284c7);
+        color: #fff;
+        box-shadow: 0 4px 20px rgba(14, 165, 233, 0.35);
+      }
+      .btn-primary:hover { box-shadow: 0 8px 28px rgba(14, 165, 233, 0.5); }
+
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border2);
+      }
+      .btn-secondary:hover { border-color: var(--sky); color: var(--sky2); }
+
+      /* ── DIVIDER ── */
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        max-width: 760px;
+        margin: 48px 0 32px;
+      }
+      .divider-line {
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--border2), transparent);
+      }
+      .divider-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+
+      /* ── FEATURE GRID ── */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+        width: 100%;
+        max-width: 760px;
+      }
+
+      .feature-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+      .feature-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-2px);
+      }
+
+      .feature-icon {
+        font-size: 24px;
+        width: 44px;
+        height: 44px;
+        background: rgba(14, 165, 233, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .feature-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+      }
+
+      .feature-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      /* ── HOW TO RUN ── */
+      .run-box {
+        width: 100%;
+        max-width: 760px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .run-header {
+        padding: 20px 28px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .run-header-icon {
+        font-size: 18px;
+        width: 36px;
+        height: 36px;
+        background: rgba(14, 165, 233, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .run-header-title {
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+
+      .run-steps {
+        padding: 24px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .run-step {
+        display: flex;
+        gap: 16px;
+      }
+
+      .step-num {
+        width: 24px;
+        height: 24px;
+        background: rgba(14, 165, 233, 0.15);
+        border: 1px solid rgba(14, 165, 233, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--sky2);
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .step-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+      .step-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .step-desc {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .code-block {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .code-block-inner {
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .code-line {
+        font-family: "SF Mono", "Fira Code", "Cascadia Mono", monospace;
+        font-size: 12px;
+        color: var(--sky2);
+        line-height: 1.7;
+      }
+
+      .code-comment {
+        color: var(--dim);
+        font-family: "SF Mono", "Fira Code", "Cascadia Mono", monospace;
+        font-size: 11px;
+      }
+
+      /* ── PORTS TABLE ── */
+      .ports-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .ports-table th {
+        text-align: left;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-size: 10px;
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .ports-table td {
+        padding: 9px 12px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .ports-table tr:last-child td { border-bottom: none; }
+
+      .port-pill {
+        display: inline-block;
+        background: rgba(14, 165, 233, 0.1);
+        border: 1px solid rgba(14, 165, 233, 0.25);
+        color: var(--sky2);
+        border-radius: 6px;
+        padding: 2px 8px;
+        font-family: monospace;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* ── FILE TYPES ── */
+      .filetypes-grid {
+        width: 100%;
+        max-width: 760px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .filetype-pill {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+        transition: border-color 0.15s;
+      }
+      .filetype-pill:hover { border-color: var(--border2); }
+
+      .ext-badge {
+        font-family: monospace;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 5px;
+        flex-shrink: 0;
+      }
+      .ext-csv  { background: #0f6e5620; color: #34d399; }
+      .ext-xlsx { background: #27500a20; color: #86efac; }
+      .ext-tsv  { background: #0f6e5620; color: #34d399; }
+      .ext-ods  { background: #63380620; color: #fcd34d; }
+      .ext-pdf  { background: #a32d2d20; color: #fca5a5; }
+      .ext-txt  { background: #2a3a5c40; color: var(--muted); }
+      .ext-num  { background: #27500a20; color: #86efac; }
+
+      /* ── FOOTER ── */
+      .footer {
+        margin-top: 72px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--dim);
+        font-weight: 500;
+        letter-spacing: 0.03em;
+      }
+      .footer span { color: var(--muted); }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 480px) {
+        .page { padding: 48px 16px 48px; }
+        .feature-grid { grid-template-columns: 1fr 1fr; }
+        .hero-title { font-size: 30px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+
+      <!-- BACK -->
+      <a class="back-link" href="../index.html">&#8592; LaunchPad</a>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Local &rsaquo; Search
+        </div>
+        <span class="hero-icon">🔍</span>
+        <h1 class="hero-title">Keywords Files Finder</h1>
+        <p class="hero-sub">
+          Find any file on your machine by what's <em>inside</em> it. Crawls your
+          filesystem, reads spreadsheet headers and document text, and surfaces
+          matches by keyword — in real time, entirely offline.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="http://localhost:5173" target="_blank" rel="noopener">
+            &#9654; Open App
+            <span style="font-size:10px;opacity:.7;font-weight:500">localhost:5173</span>
+          </a>
+          <a class="btn btn-secondary" href="https://github.com/mindobix/local-keywords-files-finder" target="_blank" rel="noopener">
+            &#8599; GitHub
+          </a>
+        </div>
+      </div>
+
+      <!-- FEATURES -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-label">Features</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗂️</div>
+          <div class="feature-title">Filesystem Crawler</div>
+          <div class="feature-desc">Watches your home directory continuously. New and changed files are indexed within seconds via Chokidar.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏷️</div>
+          <div class="feature-title">Keyword Matching</div>
+          <div class="feature-desc">Each keyword has path hints and header hints — match by filename or by column names inside the file.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📂</div>
+          <div class="feature-title">Category Sidebar</div>
+          <div class="feature-desc">Files are organized into collapsible keyword categories. A NEW section highlights recently discovered files.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔬</div>
+          <div class="feature-title">File Preview</div>
+          <div class="feature-desc">Click any file to open a paginated data grid with sortable columns. Search within columns inline.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Live Updates via SSE</div>
+          <div class="feature-desc">The UI stays in sync over Server-Sent Events. Files appear as they are indexed — no refresh needed.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <div class="feature-title">Backup &amp; Restore</div>
+          <div class="feature-desc">Export your keyword taxonomy as a portable JSON file. Restore on any machine or share with a team.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌗</div>
+          <div class="feature-title">Dark / Light Theme</div>
+          <div class="feature-desc">Toggle themes from the top bar. Preference is persisted across sessions in localStorage.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-title">100% Private</div>
+          <div class="feature-desc">No telemetry. No cloud. Only metadata (path, column names) is stored — file contents never leave your machine.</div>
+        </div>
+      </div>
+
+      <!-- SUPPORTED FILE TYPES -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-label">Supported File Types</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="filetypes-grid">
+        <div class="filetype-pill"><span class="ext-badge ext-csv">.csv</span>CSV</div>
+        <div class="filetype-pill"><span class="ext-badge ext-tsv">.tsv</span>TSV</div>
+        <div class="filetype-pill"><span class="ext-badge ext-xlsx">.xlsx</span>Excel</div>
+        <div class="filetype-pill"><span class="ext-badge ext-xlsx">.xls</span>Excel Legacy</div>
+        <div class="filetype-pill"><span class="ext-badge ext-ods">.ods</span>Spreadsheet</div>
+        <div class="filetype-pill"><span class="ext-badge ext-num">.numbers</span>Numbers</div>
+        <div class="filetype-pill"><span class="ext-badge ext-pdf">.pdf</span>PDF</div>
+        <div class="filetype-pill"><span class="ext-badge ext-txt">.txt</span>Plain Text</div>
+      </div>
+
+      <!-- HOW TO RUN -->
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-label">How to Run</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="run-box">
+        <div class="run-header">
+          <div class="run-header-icon">⚙️</div>
+          <div class="run-header-title">Getting Started</div>
+        </div>
+        <div class="run-steps">
+
+          <div class="run-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <div class="step-label">Requirements</div>
+              <div class="step-desc">Node.js 18 or later and npm must be installed.</div>
+            </div>
+          </div>
+
+          <div class="run-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <div class="step-label">Install dependencies</div>
+              <div class="code-block">
+                <div class="code-block-inner">
+                  <span class="code-line">npm install</span>
+                  <span class="code-line">npm run setup-hooks</span>
+                  <span class="code-comment"># installs the git pre-commit version-bump hook</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="run-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <div class="step-label">Start the app</div>
+              <div class="code-block">
+                <div class="code-block-inner">
+                  <span class="code-line">npm run dev</span>
+                  <span class="code-comment"># or: npm run dev:fresh — wipes the index and starts clean</span>
+                </div>
+              </div>
+              <div class="step-desc" style="margin-top:12px">Starts three processes concurrently:</div>
+              <div class="code-block" style="margin-top:8px">
+                <table class="ports-table">
+                  <thead>
+                    <tr>
+                      <th>Process</th>
+                      <th>Port</th>
+                      <th>Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Indexer</td>
+                      <td><span class="port-pill">3002</span></td>
+                      <td style="color:var(--muted)">File crawler + control API</td>
+                    </tr>
+                    <tr>
+                      <td>API Server</td>
+                      <td><span class="port-pill">3001</span></td>
+                      <td style="color:var(--muted)">REST + SSE for the UI</td>
+                    </tr>
+                    <tr>
+                      <td>Vite Dev Server</td>
+                      <td><span class="port-pill">5173</span></td>
+                      <td style="color:var(--muted)">React frontend</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="run-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <div class="step-label">Open in your browser</div>
+              <div class="code-block">
+                <div class="code-block-inner">
+                  <span class="code-line">http://localhost:5173</span>
+                </div>
+              </div>
+              <div class="step-desc" style="margin-top:8px">
+                The crawler starts watching your home directory immediately.
+                Add keywords in the Settings panel and matches will appear in the sidebar as files are indexed.
+              </div>
+            </div>
+          </div>
+
+          <div class="run-step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <div class="step-label">Optional — watch a custom path</div>
+              <div class="code-block">
+                <div class="code-block-inner">
+                  <span class="code-line">WATCH_PATH=/Volumes/Data npm run dev</span>
+                  <span class="code-comment"># override the default home-directory watch path</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer">
+        Built locally &mdash; <span>no internet required</span>
+      </div>
+
+    </div>
+  </body>
+</html>
