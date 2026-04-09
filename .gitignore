@@ -1,0 +1,8 @@
+node_modules/
+dist/
+db/explorer.db
+db/explorer.db-shm
+db/explorer.db-wal
+.env
+.DS_Store
+.vscode/

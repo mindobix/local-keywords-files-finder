@@ -1,0 +1,143 @@
+/* ============================================================
+   Global styles + design tokens for LocalDataExplorer
+   All colors and radii are defined as CSS custom properties so
+   components never hard-code values — easy to theme or dark-mode later.
+   ============================================================ */
+
+:root {
+  /* Background layers */
+  --bg-primary:   #ffffff;
+  --bg-secondary: #f7f6f3;
+  --bg-tertiary:  #efede8;
+
+  /* Text */
+  --text-primary:   #1a1a18;
+  --text-secondary: #5a5955;
+  --text-tertiary:  #9a9890;
+
+  /* Borders */
+  --border-light:  rgba(0, 0, 0, 0.10);
+  --border-medium: rgba(0, 0, 0, 0.20);
+
+  /* Shape */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Semantic — New / Info */
+  --color-new:     #1D9E75;
+  --color-new-bg:  #E6F7F1;
+  --color:     #A32D2D;
+  --color-bg:  #FCEBEB;
+  --color-info:    #185FA5;
+  --color-info-bg: #E6F1FB;
+
+  /* Category dot colors */
+  --cat-finance:   #1D9E75;
+  --cat-sales:     #378ADD;
+  --cat-analytics: #7F77DD;
+  --cat-configs:   #888780;
+  --cat-exports:   #B58B3A;
+  --cat-default:   #999999;
+
+  /* File type badge colors */
+  --csv-bg:  #E1F5EE; --csv-fg:  #0F6E56;
+  --xlsx-bg: #EAF3DE; --xlsx-fg: #27500A;
+  --json-bg: #EEEDFE; --json-fg: #3C3489;
+  --ods-bg:  #FAEEDA; --ods-fg:  #633806;
+
+  /* Sidebar width */
+  --sidebar-width: 258px;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Mono', monospace;
+}
+
+/* ── Dark theme ─────────────────────────────────────────── */
+
+[data-theme="dark"] {
+  --bg-primary:   #16161a;
+  --bg-secondary: #1e1e24;
+  --bg-tertiary:  #26262f;
+
+  --text-primary:   #e6e6e2;
+  --text-secondary: #8a8a86;
+  --text-tertiary:  #52524e;
+
+  --border-light:  rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.14);
+
+  /* Semantic — lighten so text is readable on dark backgrounds */
+  --color-new:     #3dca96;
+  --color-new-bg:  rgba(29, 158, 117, 0.18);
+  --color:     #e06868;
+  --color-bg:  rgba(163, 45, 45, 0.20);
+  --color-info:    #5599e0;
+  --color-info-bg: rgba(24, 95, 165, 0.20);
+
+  --csv-bg:  rgba(15, 110, 86, 0.20);  --csv-fg:  #4ecba0;
+  --xlsx-bg: rgba(39, 80, 10, 0.20);   --xlsx-fg: #90cc4a;
+  --json-bg: rgba(60, 52, 137, 0.20);  --json-fg: #aaa5f2;
+  --ods-bg:  rgba(99, 56, 6, 0.20);    --ods-fg:  #e0ac5a;
+}
+
+/* ── Reset ──────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin:     0;
+  padding:    0;
+}
+
+html, body, #root {
+  height:     100%;
+  overflow:   hidden;
+}
+
+body {
+  font-family:       var(--font-sans);
+  font-size:         13px;
+  color:             var(--text-primary);
+  background-color:  var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  cursor:      pointer;
+  border:      none;
+  background:  none;
+}
+
+input {
+  font-family: inherit;
+  font-size:   inherit;
+}
+
+/* ── Scrollbars (webkit) ────────────────────────────────── */
+
+::-webkit-scrollbar             { width: 6px; height: 6px; }
+::-webkit-scrollbar-track       { background: transparent; }
+::-webkit-scrollbar-thumb       { background: var(--border-medium); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* ── Utility classes ────────────────────────────────────── */
+
+.visually-hidden {
+  position: absolute;
+  width:    1px;
+  height:   1px;
+  overflow: hidden;
+  clip:     rect(0 0 0 0);
+}
+
+/* Pulsing green dot used in the sidebar footer for crawl status */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.pulse {
+  animation: pulse 1.8s ease-in-out infinite;
+}
